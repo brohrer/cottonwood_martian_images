@@ -14,6 +14,8 @@ Our goal is to compress images taken from cameras on the
 Mars Rover Curiosity so that they can be efficiently transmitted
 back to Earth.
 
+![Trained autoencoder](doc/mars_autoencoder.png)
+
 The methods we user here are explained fully in a sequence of courses
 in the [End-to-End Machine Learning School](http://e2eml.school),
 especially
