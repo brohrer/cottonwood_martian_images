@@ -28,11 +28,12 @@ especially
 
 To use this code, clone this repository and run it locally.
 It requires Cottonwood as well.
-You can do all this at the command line:
+You can do all this at the command line. Just a heads-up that this
+repository includes a dataset of 270 images and weighs in at 177 MB.
 
 ```bash
 git clone https://github.com/brohrer/cottonwood_martian_images.git
 python3 -m pip install cottonwood --user --no-cache
-python3 build_patch_dictionary.py
 cd cottonwood_martian_images
+python3 build_patch_dictionary.py
 ```
