@@ -32,6 +32,7 @@ You can do all this at the command line:
 
 ```bash
 git clone https://github.com/brohrer/cottonwood_martian_images.git
-python3 -m pip install cottonwood
-python3 cottonwood_martian_images/build_path_dictionary.py
+python3 -m pip install cottonwood --user --no-cache
+python3 build_patch_dictionary.py
+cd cottonwood_martian_images
 ```
