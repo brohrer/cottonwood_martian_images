@@ -28,6 +28,7 @@ especially
 
 To use this code, clone this repository and run it locally.
 It requires Cottonwood as well.
+You can do all this at the command line:
 
 ```bash
 git clone https://github.com/brohrer/cottonwood_martian_images.git
