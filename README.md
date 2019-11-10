@@ -5,8 +5,8 @@
 This is an End-to-End case study showing how to use an autoencoder
 (a type of deep neural network) to compress a set of images.
 
-We make use of the [Cottonwood machine learning framework]
-(https://github.com/brohrer/cottonwood), a flexible tool for
+We make use of the [Cottonwood machine learning framework](
+https://github.com/brohrer/cottonwood), a flexible tool for
 building and experimenting with neural networks and other
 machine learning methods.
 
