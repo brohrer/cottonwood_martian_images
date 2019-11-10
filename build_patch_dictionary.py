@@ -19,8 +19,8 @@ def run():
     n_pixels = np.prod(sample.shape)
     printer = Printer(input_shape=sample.shape)
 
-    # N_NODES = [64, 36, 24, 36, 64]
-    N_NODES = [64]
+    N_NODES = [64, 36, 24, 36, 64]
+    # N_NODES = [64]
     n_nodes = N_NODES + [n_pixels]
     layers = []
 
