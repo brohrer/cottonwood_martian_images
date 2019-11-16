@@ -37,3 +37,12 @@ python3 -m pip install cottonwood --user --no-cache
 cd cottonwood_martian_images
 python3 build_patch_dictionary.py
 ```
+
+## Dependencies
+
+Installing Cottonwood will ensure that most
+dependecies are met. This project also uses Pillow, available for pip install.
+
+```bash
+python3 -m pip install Pillow --user
+```

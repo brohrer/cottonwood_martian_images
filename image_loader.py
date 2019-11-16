@@ -1,7 +1,7 @@
 import os
+from PIL import Image
 import numpy as np
-import matplotlib.pyplot as plt
-
+import cottonwood.core.toolbox as tb
 
 training_path = os.path.join("data", "training")
 tuning_path = os.path.join("data", "tuning")
@@ -11,11 +11,11 @@ patch_size = 10
 
 
 def load_image(path, imagename):
-    img = plt.imread(os.path.join(path, imagename), format='jpeg')
+    img = np.asarray(Image.open(os.path.join(path, imagename))) / 255
 
     # Convert color images to grayscale
     if len(img.shape) == 3:
-        img = np.mean(img, axis=2)
+        img = tb.rgb2gray(img)
 
     n_rows, n_cols = img.shape
     assert len(img.shape) == 2
