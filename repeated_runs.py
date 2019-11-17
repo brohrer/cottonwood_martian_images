@@ -1,3 +1,4 @@
+import datetime as dt
 import os
 import pickle as pkl
 import numpy as np
@@ -56,23 +57,14 @@ def initialize():
         verbose=False,
     )
 
-    msg = """
-
-    Running autoencoder on images of the surface of Mars.
-        Find performance history plots, model parameter report,
-        and neural network visualizations in the directory
-        {}
-
-""".format(autoencoder.reports_path)
-
-    print(msg)
-
     return autoencoder, training_set, tuning_set
 
 
 def run():
     error_histories = []
-    for _ in range(N_ITER_RUNS):
+    for i_run in range(N_ITER_RUNS):
+        time_str = dt.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        print(f"Running iteration {i_run} of {N_ITER_RUNS} at {time_str}")
         autoencoder, training_set, tuning_set = initialize()
         autoencoder.train(training_set)
         error_history = autoencoder.evaluate(tuning_set)
