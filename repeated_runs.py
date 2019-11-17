@@ -9,7 +9,7 @@ from cottonwood.core.initializers import Glorot
 from cottonwood.core.layers.dense import Dense
 from cottonwood.core.layers.range_normalization import RangeNormalization
 from cottonwood.core.layers.difference import Difference
-from cottonwood.core.optimizers import Momentum, SGD
+from cottonwood.core.optimizers import SGD
 from cottonwood.core.regularization import Limit
 from cottonwood.examples.autoencoder.autoencoder_viz import Printer
 import image_loader as ldr
@@ -40,10 +40,8 @@ def initialize():
             activation_function=Tanh,
             initializer=Glorot(),
             previous_layer=layers[-1],
-            # optimizer=Momentum(),
             optimizer=SGD(),
         )
-        # new_layer.add_regularizer(L1())
         new_layer.add_regularizer(Limit(4.0))
         layers.append(new_layer)
 
@@ -102,7 +100,6 @@ def visualize(error_histories):
             ]))
         error_history = np.log10(np.array(smoothed_history) + 1e-10)
 
-        # blurry_plot(ax, error_history)
         ax.plot(error_history, color="midnightblue", linewidth=.3, alpha=.3)
 
         ymin = np.minimum(ymin, np.min(error_history))
