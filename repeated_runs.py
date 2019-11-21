@@ -49,7 +49,7 @@ def initialize():
     layers.append(Difference(layers[-1], layers[0]))
 
     autoencoder = ANN(
-            layers=layers,
+        layers=layers,
         error_function=Sqr,
         n_iter_train=N_ITER_TRAIN,
         n_iter_evaluate=N_ITER_EVALUATE,
