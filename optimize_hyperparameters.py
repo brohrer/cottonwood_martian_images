@@ -11,7 +11,7 @@ from cottonwood.core.optimizers import Momentum
 from cottonwood.core.regularization import Limit, L1, L2
 from cottonwood.examples.autoencoder.autoencoder_viz import Printer
 import image_loader as ldr
-from optimizers import Grid
+from optimizers import Random
 
 # There are 2016 unique combinations of parameter values.
 CONDITIONS = {
@@ -23,7 +23,7 @@ CONDITIONS = {
 
 
 def main():
-    optimizer = Grid()
+    optimizer = Random()
     lowest_error, best_condition = optimizer.optimize(evaluate, CONDITIONS)
 
 

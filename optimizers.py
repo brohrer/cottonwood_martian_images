@@ -4,7 +4,7 @@ import numpy as np
 import toolbox as tb
 
 
-class Grid(object):
+class HPOptimizer(object):
     def __init__(
         self,
         report_dir=os.path.join(
@@ -64,7 +64,24 @@ class Grid(object):
         tb.progress_report(results_so_far, self.report_plot_filename)
         return self.best_error, self.best_condition, self.report_filename
 
+    def condition_generator(self, conditions):
+        pass
+
+
+class Random(HPOptimizer):
+    def __init__(self, n_iter=1e10):
+        super().__init__()
+        self.n_iter = n_iter
+
     def condition_generator(self, unexpanded_conditions):
         conditions = tb.grid_expand(unexpanded_conditions)
+        np.random.shuffle(conditions)
+        if self.n_iter < len(conditions):
+            conditions = conditions[:self.n_iter]
+
         for condition in conditions:
             yield condition
+
+# The Random search using the default n_iter will eventually
+# cover the entire grid.
+Grid = Random
