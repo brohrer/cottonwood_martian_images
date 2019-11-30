@@ -9,8 +9,9 @@ from cottonwood.core.layers.range_normalization import RangeNormalization
 from cottonwood.core.layers.difference import Difference
 from cottonwood.core.optimizers import Momentum
 from cottonwood.core.regularization import Limit, L1, L2
+from cottonwood.examples.autoencoder.autoencoder_viz import Printer
 import image_loader as ldr
-import toolbox as tb
+from optimizers import Grid
 
 # There are 2016 unique combinations of parameter values.
 CONDITIONS = {
@@ -21,30 +22,14 @@ CONDITIONS = {
 }
 
 
+def main():
+    optimizer = Grid()
+    lowest_error, best_condition = optimizer.optimize(evaluate, CONDITIONS)
+
+
 def evaluate(**condition):
     autoencoder, training_set, tuning_set = initialize(**condition)
     return autoencoder.evaluate_hyperparameters(training_set, tuning_set)
-
-
-def optimize(evaluate, unexpanded_conditions, verbose=True):
-    best_error = 1e10
-    best_condition = None
-    condition_history = []
-    conditions = tb.grid_expand(unexpanded_conditions)
-    for condition in conditions:
-        if verbose:
-            print("    Evaluating condition", condition)
-        error = evaluate(**condition)
-        condition["error"] = error
-        condition_history.append(condition)
-
-        if error < best_error:
-            best_error = error
-            best_condition = condition
-
-        tb.results_dict_list_to_csv(condition_history, "optimization_log.csv")
-        tb.progress_report(condition_history, "optimization_report.png")
-    return best_error, best_condition
 
 
 def initialize(
@@ -90,12 +75,13 @@ def initialize(
     autoencoder = ANN(
         layers=layers,
         error_function=Sqr,
-        n_iter_train=5e2,
-        n_iter_evaluate=1e2,
+        n_iter_train=5e4,
+        n_iter_evaluate=1e4,
         verbose=False,
     )
 
     return autoencoder, training_set, tuning_set
 
 
-lowest_error, best_condition = optimize(evaluate, CONDITIONS)
+if __name__ == "__main__":
+    main()
