@@ -18,6 +18,13 @@ def grid_expand(conditions):
     return expanded
 
 
+def get_random_condition(conditions):
+    rand_condition = {}
+    for key, value in conditions.items():
+        rand_condition[key] = np.random.choice(conditions[key])
+    return rand_condition
+
+
 def results_dict_list_to_csv(results_dict, csv_filename):
     """
     Lifted from Matthew Flaschen on StackOverflow
