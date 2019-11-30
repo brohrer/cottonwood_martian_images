@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 import numpy as np
-import cottonwood.core.toolbox as tb
+import lodgepole.image_tools as lit
 
 training_path = os.path.join("data", "training")
 tuning_path = os.path.join("data", "tuning")
@@ -15,7 +15,7 @@ def load_image(path, imagename):
 
     # Convert color images to grayscale
     if len(img.shape) == 3:
-        img = tb.rgb2gray(img)
+        img = lit.rgb2gray(img)
 
     n_rows, n_cols = img.shape
     assert len(img.shape) == 2
