@@ -24,7 +24,8 @@ CONDITIONS = {
 
 def main():
     optimizer = EvoPowell()
-    lowest_error, best_condition = optimizer.optimize(evaluate, CONDITIONS)
+    lowest_error, best_condition, log_filename = (
+        optimizer.optimize(evaluate, CONDITIONS))
 
 
 def evaluate(**condition):
