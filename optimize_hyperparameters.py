@@ -1,6 +1,6 @@
 import numpy as np
 
-from cottonwood.core.activation import Logistic, ReLU, Tanh
+from cottonwood.core.activation import Tanh
 from cottonwood.core.model import ANN
 from cottonwood.core.error_function import Sqr
 from cottonwood.core.initializers import Glorot
@@ -13,11 +13,10 @@ from cottonwood.core.regularization import Limit, L1, L2
 import image_loader as ldr
 from ponderosa.optimizers import EvoPowell
 
-# There are 2016 unique combinations of parameter values.
 CONDITIONS = {
-    "activation_function": [Logistic(), ReLU(), Tanh()],
-    "learning_rate": list(np.power(10.0, np.linspace(-4, -2, 6))),
-    "momentum_amount": list(np.linspace(.8, .95, 6)),
+    "n_nodes_0": [13, 17, 21, 25, 33, 47],
+    "n_nodes_1": [0, 13, 17, 21, 25, 33, 47],
+    "n_nodes_2": [0, 13, 17, 21, 25, 33, 47],
 }
 
 
@@ -39,14 +38,18 @@ def initialize(
     L2_param=None,
     learning_rate=1e-3,
     momentum_amount=.9,
+    n_nodes_0=25,
+    n_nodes_1=47,
+    n_nodes_2=33,
     **kwargs,
 ):
     training_set, tuning_set, evaluation_set = ldr.get_data_sets()
 
     sample = next(training_set)
     n_pixels = np.prod(sample.shape)
-    N_NODES = [33]
-    n_nodes = N_NODES + [n_pixels]
+    n_nodes_dense = [n_nodes_0, n_nodes_1, n_nodes_2]
+    n_nodes_dense = [n for n in n_nodes_dense if n > 0]
+    n_nodes = n_nodes_dense + [n_pixels]
     layers = []
 
     layers.append(RangeNormalization(training_set))
@@ -57,7 +60,7 @@ def initialize(
             activation_function=activation_function,
             initializer=Glorot(),
             previous_layer=layers[-1],
-            optimizer = Momentum(
+            optimizer=Momentum(
                 learning_rate=learning_rate,
                 momentum_amount=momentum_amount,
             )
