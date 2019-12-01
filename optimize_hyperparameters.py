@@ -37,10 +37,8 @@ def initialize(
     limit=None,
     L1_param=None,
     L2_param=None,
-    optimizer_type="Momentum",
     learning_rate=1e-3,
-    momentum_amount=.9,  # Doubles as adam_beta_1
-    adam_beta_2=.999,
+    momentum_amount=.9,
     **kwargs,
 ):
     training_set, tuning_set, evaluation_set = ldr.get_data_sets()
@@ -78,8 +76,8 @@ def initialize(
     autoencoder = ANN(
         layers=layers,
         error_function=Sqr,
-        n_iter_train=5e2,
-        n_iter_evaluate=1e2,
+        n_iter_train=5e3,
+        n_iter_evaluate=1e3,
         verbose=False,
     )
 
