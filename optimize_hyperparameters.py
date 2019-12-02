@@ -8,15 +8,14 @@ from cottonwood.core.layers.dense import Dense
 from cottonwood.core.layers.range_normalization import RangeNormalization
 from cottonwood.core.layers.difference import Difference
 from cottonwood.core.optimizers import Momentum
-from cottonwood.core.regularization import Limit, L1, L2
-# from cottonwood.examples.autoencoder.autoencoder_viz import Printer
 import image_loader as ldr
 from ponderosa.optimizers import EvoPowell
 
 CONDITIONS = {
-    "n_nodes_0": [13, 17, 21, 25, 33, 47],
-    "n_nodes_1": [0, 13, 17, 21, 25, 33, 47],
-    "n_nodes_2": [0, 13, 17, 21, 25, 33, 47],
+    "learning_rate_0": list(np.power(10, np.linspace(-4, -2, 7))),
+    "learning_rate_1": list(np.power(10, np.linspace(-4, -2, 7))),
+    "learning_rate_2": list(np.power(10, np.linspace(-4, -2, 7))),
+    "learning_rate_3": list(np.power(10, np.linspace(-4, -2, 7))),
 }
 
 
@@ -32,12 +31,14 @@ def evaluate(**condition):
 
 
 def initialize(
-    activation_function=Tanh(),
-    limit=None,
-    L1_param=None,
-    L2_param=None,
-    learning_rate=1e-3,
-    momentum_amount=.9,
+    learning_rate_0=1e-3,
+    learning_rate_1=1e-3,
+    learning_rate_2=1e-3,
+    learning_rate_3=1e-3,
+    momentum_amount_0=.83,
+    momentum_amount_1=.83,
+    momentum_amount_2=.83,
+    momentum_amount_3=.83,
     n_nodes_0=25,
     n_nodes_1=47,
     n_nodes_2=33,
@@ -52,26 +53,31 @@ def initialize(
     n_nodes = n_nodes_dense + [n_pixels]
     layers = []
 
+    learning_rates = [
+        learning_rate_0,
+        learning_rate_1,
+        learning_rate_2,
+        learning_rate_3,
+    ]
+    momentum_amounts = [
+        momentum_amount_0,
+        momentum_amount_1,
+        momentum_amount_2,
+        momentum_amount_3,
+    ]
     layers.append(RangeNormalization(training_set))
 
     for i_layer in range(len(n_nodes)):
         new_layer = Dense(
             n_nodes[i_layer],
-            activation_function=activation_function,
+            activation_function=Tanh(),
             initializer=Glorot(),
             previous_layer=layers[-1],
             optimizer=Momentum(
-                learning_rate=learning_rate,
-                momentum_amount=momentum_amount,
+                learning_rate=learning_rates[i_layer],
+                momentum_amount=momentum_amounts[i_layer],
             )
         )
-        if limit is not None:
-            new_layer.add_regularizer(Limit(limit))
-        if L1_param is not None:
-            new_layer.add_regularizer(L1(L1_param))
-        if L2_param is not None:
-            new_layer.add_regularizer(L2(L2_param))
-
         layers.append(new_layer)
 
     layers.append(Difference(layers[-1], layers[0]))
