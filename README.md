@@ -36,9 +36,12 @@ dependecies are met. This project also uses
 * Ponderosa, a hyperparameter optimization package.
 
 ```bash
-python3 -m pip install git+https://github.com/brohrer/cottonwood.git --user --no-cache
-python3 -m pip install git+https://github.com/brohrer/ponderosa.git --user --no-cache
-python3 -m pip install git+https://github.com/brohrer/lodgepole.git --user --no-cache
+git clone https://github.com/brohrer/cottonwood.git
+git clone https://github.com/brohrer/lodgepole.git
+git clone https://github.com/brohrer/ponderosa.git
+python3 -m pip install -e cottonwood
+python3 -m pip install -e lodgepole
+python3 -m pip install -e ponderosa
 python3 -m pip install Pillow --user
 ```
 
