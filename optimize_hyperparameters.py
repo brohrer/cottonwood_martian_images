@@ -9,18 +9,19 @@ from cottonwood.core.layers.range_normalization import RangeNormalization
 from cottonwood.core.layers.difference import Difference
 from cottonwood.core.optimizers import Momentum
 import image_loader as ldr
-from ponderosa.optimizers import EvoPowell
+from ponderosa.optimizers import EvoPowell, Random
 
 CONDITIONS = {
-    "learning_rate_0": list(np.power(10, np.linspace(-4, -2, 7))),
-    "learning_rate_1": list(np.power(10, np.linspace(-4, -2, 7))),
-    "learning_rate_2": list(np.power(10, np.linspace(-4, -2, 7))),
-    "learning_rate_3": list(np.power(10, np.linspace(-4, -2, 7))),
+    "learning_rate_0": list(np.power(10, np.linspace(-4.5, -1.5, 13))),
+    "learning_rate_1": list(np.power(10, np.linspace(-4.5, -1.5, 13))),
+    "learning_rate_2": list(np.power(10, np.linspace(-4.5, -1.5, 13))),
+    "learning_rate_3": list(np.power(10, np.linspace(-4.5, -1.5, 13))),
 }
 
 
 def main():
-    optimizer = EvoPowell()
+    # optimizer = EvoPowell()
+    optimizer = Random()
     lowest_error, best_condition, log_filename = (
         optimizer.optimize(evaluate, CONDITIONS))
 
@@ -87,6 +88,7 @@ def initialize(
         error_function=Sqr,
         n_iter_train=5e3,
         n_iter_evaluate=1e3,
+        n_iter_evaluate_hyperparameters=11,
         verbose=False,
     )
 

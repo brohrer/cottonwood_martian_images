@@ -8,6 +8,7 @@ tuning_path = os.path.join("data", "tuning")
 evaluation_path = os.path.join("data", "evaluation")
 
 patch_size = 10
+switch_probability = 1 / 200
 
 
 def load_image(path, imagename):
@@ -24,10 +25,10 @@ def load_image(path, imagename):
     assert n_cols > patch_size
 
     # Pad out to a multiple of patch_size
-    padded = np.zeros((
-        int(np.ceil(n_rows / patch_size)) * patch_size,
-        int(np.ceil(n_cols / patch_size)) * patch_size))
-    padded[:n_rows, :n_cols] = img
+    n_rows_pad = int(np.ceil(n_rows / patch_size)) * patch_size
+    n_cols_pad = int(np.ceil(n_cols / patch_size)) * patch_size
+
+    padded = np.pad(img, ((0, n_rows_pad - n_rows), (0, n_cols_pad - n_cols)))
 
     assert np.sum(np.isnan(padded)) == 0
 
@@ -54,7 +55,6 @@ def get_data_sets():
         new_tuning_example = next(tuning_generator())
         new_evaluation_example = next(evaluation_generator())
     """
-    switch_probability = 1 / 100
 
     def data_generator(path):
         filenames = os.listdir(path)
