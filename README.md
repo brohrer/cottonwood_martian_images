@@ -26,23 +26,26 @@ especially
 
 ## Installation
 
-To use this code, clone this repository and run it locally.
+### Dependencies
+
+First make sure you have the packages in place that it depends on.
+Installing Cottonwood will ensure that most
+dependecies are met. This project also uses Pillow, an image library for Python,
+and Lodgepole, a set of image processing tools I find useful.
+
+```bash
+python3 -m pip install cottonwood pip install git+https://github.com/brohrer/cottonwood.git --user --no-cache
+python3 -m pip install lodgepole pip install git+https://github.com/brohrer/lodgepole.git --user --no-cache
+python3 -m pip install Pillow --user
+```
+
+To use the code for this project, clone this repository and run it locally.
 It requires Cottonwood as well.
 You can do all this at the command line. Just a heads-up that this
 repository includes a dataset of 270 images and weighs in at 177 MB.
 
 ```bash
 git clone https://github.com/brohrer/cottonwood_martian_images.git
-python3 -m pip install cottonwood --user --no-cache
 cd cottonwood_martian_images
 python3 build_patch_dictionary.py
-```
-
-## Dependencies
-
-Installing Cottonwood will ensure that most
-dependecies are met. This project also uses Pillow, available for pip install.
-
-```bash
-python3 -m pip install Pillow --user
 ```
