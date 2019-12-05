@@ -30,17 +30,19 @@ especially
 
 First make sure you have the packages in place that it depends on.
 Installing Cottonwood will ensure that most
-dependecies are met. This project also uses Pillow, an image library for Python,
-and Lodgepole, a set of image processing tools I find useful.
+dependecies are met. This project also uses
+* Pillow, an image library for Python,
+* Lodgepole, a set of image processing tools I find useful, and
+* Ponderosa, a hyperparameter optimization package.
 
 ```bash
-python3 -m pip install cottonwood pip install git+https://github.com/brohrer/cottonwood.git --user --no-cache
-python3 -m pip install lodgepole pip install git+https://github.com/brohrer/lodgepole.git --user --no-cache
+python3 -m pip install git+https://github.com/brohrer/cottonwood.git --user --no-cache
+python3 -m pip install git+https://github.com/brohrer/ponderosa.git --user --no-cache
+python3 -m pip install git+https://github.com/brohrer/lodgepole.git --user --no-cache
 python3 -m pip install Pillow --user
 ```
 
 To use the code for this project, clone this repository and run it locally.
-It requires Cottonwood as well.
 You can do all this at the command line. Just a heads-up that this
 repository includes a dataset of 270 images and weighs in at 177 MB.
 
