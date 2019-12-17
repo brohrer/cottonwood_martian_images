@@ -16,8 +16,8 @@ def load_image(path, imagename):
 
     # Convert color images to grayscale
     if len(img.shape) == 3:
-        # img = lit.rgb2gray(img)
-        img = lit.rgb2gray_approx(img)
+        img = lit.rgb2gray(img)
+        # img = lit.rgb2gray_approx(img)
 
     n_rows, n_cols = img.shape
     assert len(img.shape) == 2

@@ -20,8 +20,8 @@ CONDITIONS = {
 
 
 def main():
-    # optimizer = EvoPowell()
-    optimizer = Random()
+    optimizer = EvoPowell()
+    # optimizer = Random()
     lowest_error, best_condition, log_filename = (
         optimizer.optimize(evaluate, CONDITIONS))
 
@@ -86,10 +86,10 @@ def initialize(
     autoencoder = ANN(
         layers=layers,
         error_function=Sqr,
-        n_iter_train=5e3,
-        n_iter_evaluate=1e3,
+        n_iter_train=5e5,
+        n_iter_evaluate=1e5,
         n_iter_evaluate_hyperparameters=11,
-        verbose=False,
+        verbose=True,
     )
 
     return autoencoder, training_set, tuning_set
