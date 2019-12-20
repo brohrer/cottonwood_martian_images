@@ -10,7 +10,6 @@ evaluation_path = os.path.join("data", "evaluation")
 patch_size = 10
 switch_probability = 1 / 200
 
-
 def load_image(path, imagename):
     img = np.asarray(Image.open(os.path.join(path, imagename))) / 255
 
@@ -34,6 +33,25 @@ def load_image(path, imagename):
     return padded
 
 
+def pre_load():
+    training_images = []
+    tuning_images = []
+    evaluation_images = []
+    for path, imagelist in zip(
+        (training_path, tuning_path, evaluation_path),
+        (training_images, tuning_images, evaluation_images)
+    ):
+        filenames = os.listdir(path)
+        imagenames = [f for f in filenames if f[-4:] == ".jpg"]
+
+        assert len(imagenames) > 0
+
+        for imagename in imagenames:
+            imagelist.append(load_image(path, imagename))
+
+    return (training_images, tuning_images, evaluation_images)
+
+
 def get_data_sets():
     """
     This function creates three other functions that generate data.
@@ -55,19 +73,12 @@ def get_data_sets():
         new_evaluation_example = next(evaluation_generator())
     """
 
-    def data_generator(path):
-        filenames = os.listdir(path)
-        imagenames = [f for f in filenames if f[-4:] == ".jpg"]
-
-        assert len(imagenames) > 0
-
+    def data_generator(imagelist):
         img = None
         while True:
             # Occasionally switch to a new image
             if img is None or np.random.sample() < switch_probability:
-                img = load_image(
-                    path,
-                    np.random.choice(imagenames))
+                img = np.random.choice(imagelist)
                 n_rows, n_cols = img.shape
 
             i_row = np.random.randint(n_rows - patch_size)
@@ -75,10 +86,14 @@ def get_data_sets():
             yield img[i_row: i_row + patch_size, i_col: i_col + patch_size]
 
     return (
-        data_generator(training_path),
-        data_generator(tuning_path),
-        data_generator(evaluation_path)
+        data_generator(training_images),
+        data_generator(tuning_images),
+        data_generator(evaluation_images)
     )
+
+
+# Pre-load all the images into memory
+training_images, tuning_images, evaluation_images = pre_load()
 
 
 if __name__ == "__main__":
