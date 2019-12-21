@@ -9,19 +9,17 @@ from cottonwood.core.layers.range_normalization import RangeNormalization
 from cottonwood.core.layers.difference import Difference
 from cottonwood.core.optimizers import Momentum
 import image_loader as ldr
-from ponderosa.optimizers import EvoPowell, Random
+from ponderosa.optimizers_parallel import EvoPowell
 
 CONDITIONS = {
-    "learning_rate_0": list(np.power(10, np.linspace(-4.5, -1.5, 13))),
-    "learning_rate_1": list(np.power(10, np.linspace(-4.5, -1.5, 13))),
-    "learning_rate_2": list(np.power(10, np.linspace(-4.5, -1.5, 13))),
-    "learning_rate_3": list(np.power(10, np.linspace(-4.5, -1.5, 13))),
+    "n_nodes_0": [23, 31, 47, 59, 71, 89, 107, 149],
+    "n_nodes_1": [0, 23, 31, 47, 59, 71, 89, 107, 149],
+    "n_nodes_2": [0, 23, 31, 47, 59, 71, 89, 107, 149],
 }
 
 
 def main():
     optimizer = EvoPowell()
-    # optimizer = Random()
     lowest_error, best_condition, log_filename = (
         optimizer.optimize(evaluate, CONDITIONS))
 
@@ -36,13 +34,9 @@ def initialize(
     learning_rate_1=1e-3,
     learning_rate_2=1e-3,
     learning_rate_3=1e-3,
-    momentum_amount_0=.83,
-    momentum_amount_1=.83,
-    momentum_amount_2=.83,
-    momentum_amount_3=.83,
-    n_nodes_0=25,
+    n_nodes_0=47,
     n_nodes_1=47,
-    n_nodes_2=33,
+    n_nodes_2=47,
     **kwargs,
 ):
     training_set, tuning_set, evaluation_set = ldr.get_data_sets()
@@ -60,12 +54,6 @@ def initialize(
         learning_rate_2,
         learning_rate_3,
     ]
-    momentum_amounts = [
-        momentum_amount_0,
-        momentum_amount_1,
-        momentum_amount_2,
-        momentum_amount_3,
-    ]
     layers.append(RangeNormalization(training_set))
 
     for i_layer in range(len(n_nodes)):
@@ -76,7 +64,7 @@ def initialize(
             previous_layer=layers[-1],
             optimizer=Momentum(
                 learning_rate=learning_rates[i_layer],
-                momentum_amount=momentum_amounts[i_layer],
+                momentum_amount=.9,
             )
         )
         layers.append(new_layer)
@@ -86,10 +74,10 @@ def initialize(
     autoencoder = ANN(
         layers=layers,
         error_function=Sqr,
-        n_iter_train=5e5,
-        n_iter_evaluate=1e5,
-        n_iter_evaluate_hyperparameters=11,
-        verbose=True,
+        n_iter_train=5e4,
+        n_iter_evaluate=1e4,
+        n_iter_evaluate_hyperparameters=7,
+        verbose=False,
     )
 
     return autoencoder, training_set, tuning_set
