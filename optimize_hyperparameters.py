@@ -10,13 +10,30 @@ from cottonwood.core.layers.difference import Difference
 from cottonwood.core.optimizers import Momentum
 import image_loader as ldr
 from ponderosa.optimizers_parallel import EvoPowell
+# from ponderosa.optimizers import EvoPowell
 
-CONDITIONS = {
-    "n_nodes_0": [23, 31, 47, 59, 71, 89, 107, 149],
-    "n_nodes_1": [0, 23, 31, 47, 59, 71, 89, 107, 149],
-    "n_nodes_2": [0, 23, 31, 47, 59, 71, 89, 107, 149],
+CONDITIONS_0 = {
+    "n_nodes_0": [23, 49, 77, 113, 147],
+    "n_nodes_1": [9, 10, 11, 13, 17, 23, 29, 37],
+    "n_nodes_2": [23, 49, 77, 113, 147],
+    "patch_size": [7, 9, 11, 13, 17, 21],
 }
 
+CONDITIONS_1 = {
+    "n_nodes_1": [ 8, 9, 10, 11, 12, 13, 14, 15, 17],
+    "patch_size": [7, 8, 9, 10, 11, 12, 13, 15],
+}
+
+CONDITIONS_2 = {
+    "n_nodes_00": [23, 49, 77, 113, 147],
+    "n_nodes_0": [23, 49, 77, 113, 147],
+    "n_nodes_1": [ 8, 9, 10, 11, 12],
+    "n_nodes_2": [23, 49, 77, 113, 147],
+    "n_nodes_3": [23, 49, 77, 113, 147],
+    "patch_size": [7, 9, 11, 13, 17, 21],
+}
+
+CONDITIONS = CONDITIONS_2
 
 def main():
     optimizer = EvoPowell()
@@ -26,34 +43,40 @@ def main():
 
 def evaluate(**condition):
     autoencoder, training_set, tuning_set = initialize(**condition)
-    return autoencoder.evaluate_hyperparameters(training_set, tuning_set)
+    nn_error = autoencoder.evaluate_hyperparameters(training_set, tuning_set)
+
+    compression_ratio = condition["n_nodes_1"] / condition["patch_size"] ** 2
+    # Severely penalize autoencoders that have too much error.
+    error_threshold = -3
+    if nn_error > error_threshold:
+        compression_ratio += 1
+    print("nn error", nn_error, "compression", compression_ratio)
+
+    return compression_ratio
 
 
 def initialize(
-    learning_rate_0=1e-3,
-    learning_rate_1=1e-3,
-    learning_rate_2=1e-3,
-    learning_rate_3=1e-3,
+    learning_rate=1e-3,
+    n_nodes_00=47,
     n_nodes_0=47,
     n_nodes_1=47,
     n_nodes_2=47,
+    n_nodes_3=47,
+    patch_size=10,
     **kwargs,
 ):
-    training_set, tuning_set, evaluation_set = ldr.get_data_sets()
+    training_set, tuning_set, evaluation_set = ldr.get_data_sets(
+        patch_size=patch_size)
 
     sample = next(training_set)
     n_pixels = np.prod(sample.shape)
-    n_nodes_dense = [n_nodes_0, n_nodes_1, n_nodes_2]
+    n_nodes_dense = [n_nodes_00, n_nodes_0, n_nodes_1, n_nodes_2, n_nodes_3]
+    # n_nodes_dense = [n_nodes_0, n_nodes_1, n_nodes_2]
     n_nodes_dense = [n for n in n_nodes_dense if n > 0]
+    # n_nodes_dense = [n_nodes_1]
     n_nodes = n_nodes_dense + [n_pixels]
     layers = []
 
-    learning_rates = [
-        learning_rate_0,
-        learning_rate_1,
-        learning_rate_2,
-        learning_rate_3,
-    ]
     layers.append(RangeNormalization(training_set))
 
     for i_layer in range(len(n_nodes)):
@@ -63,7 +86,7 @@ def initialize(
             initializer=Glorot(),
             previous_layer=layers[-1],
             optimizer=Momentum(
-                learning_rate=learning_rates[i_layer],
+                learning_rate=learning_rate,
                 momentum_amount=.9,
             )
         )
