@@ -14,7 +14,7 @@ from ponderosa.optimizers import EvoPowell
 
 # LEARNING_RATES = np.power(10, np.linspace(-5, -3, 7))
 LEARNING_RATES = np.power(10, np.linspace(-5, -3, 5))
-CONDITIONS = {
+CONDITIONS_0 = {
     "learning_rate_00": list(LEARNING_RATES),
     "learning_rate_0": list(LEARNING_RATES),
     "learning_rate_1": list(LEARNING_RATES),
@@ -23,6 +23,11 @@ CONDITIONS = {
     "learning_rate_out": list(LEARNING_RATES),
 }
 
+CONDITIONS_1 = {
+    "learning_rate_00": list(LEARNING_RATES),
+}
+
+CONDITIONS = CONDITIONS_1
 
 def main():
     optimizer = EvoPowell()
@@ -79,7 +84,8 @@ def initialize(
             initializer=Glorot(),
             previous_layer=layers[-1],
             optimizer=Momentum(
-                learning_rate=learning_rates[i_layer],
+                # learning_rate=learning_rates[i_layer],
+                learning_rate=learning_rate_00,
                 momentum_amount=.9,
             )
         )
