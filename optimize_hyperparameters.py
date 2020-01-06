@@ -10,10 +10,11 @@ from cottonwood.core.layers.difference import Difference
 from cottonwood.core.optimizers import Momentum
 import image_loader as ldr
 # from ponderosa.optimizers_parallel import EvoPowell
-from ponderosa.optimizers import EvoPowell
+from ponderosa.optimizers import EvoPowell, Random
 
 # LEARNING_RATES = np.power(10, np.linspace(-5, -3, 7))
-LEARNING_RATES = np.power(10, np.linspace(-5, -3, 5))
+# LEARNING_RATES = np.power(10, np.linspace(-5, -3, 5))
+LEARNING_RATES = np.power(10, np.linspace(-5, -2, 19))
 CONDITIONS_0 = {
     "learning_rate_00": list(LEARNING_RATES),
     "learning_rate_0": list(LEARNING_RATES),
@@ -27,10 +28,29 @@ CONDITIONS_1 = {
     "learning_rate_00": list(LEARNING_RATES),
 }
 
+CONDITIONS_2 = {
+    "learning_rate_00": list(LEARNING_RATES),
+    "learning_rate_0": list(LEARNING_RATES),
+    "learning_rate_1": list(LEARNING_RATES),
+}
+
+CONDITIONS_3 = {
+    "learning_rate_00": list(LEARNING_RATES),
+    "learning_rate_0": list(LEARNING_RATES),
+}
+
+CONDITIONS_4 = {
+    "learning_rate_00": list(LEARNING_RATES),
+    "learning_rate_0": list(LEARNING_RATES),
+    "learning_rate_3": list(LEARNING_RATES),
+    "learning_rate_out": list(LEARNING_RATES),
+}
+
 CONDITIONS = CONDITIONS_1
 
 def main():
-    optimizer = EvoPowell()
+    optimizer = Random()
+    # optimizer = EvoPowell()
     lowest_error, best_condition, log_filename = (
         optimizer.optimize(evaluate, CONDITIONS))
 
@@ -62,17 +82,31 @@ def initialize(
 
     sample = next(training_set)
     n_pixels = np.prod(sample.shape)
-    n_nodes_dense = [n_nodes_00, n_nodes_0, n_nodes_1, n_nodes_2, n_nodes_3]
+    # n_nodes_dense = [n_nodes_00, n_nodes_0, n_nodes_1, n_nodes_2, n_nodes_3]
+    # n_nodes_dense = [n_nodes_00, n_nodes_1, n_nodes_3]
+    n_nodes_dense = [n_nodes_1]
     n_nodes_dense = [n for n in n_nodes_dense if n > 0]
     n_nodes = n_nodes_dense + [n_pixels]
     learning_rates = [
         learning_rate_00,
         learning_rate_0,
-        learning_rate_1,
-        learning_rate_2,
-        learning_rate_3,
-        learning_rate_out,
+        # learning_rate_1,
+        # learning_rate_2,
+        # learning_rate_3,
+        # learning_rate_out,
     ]
+    '''
+    # Symmetric arrangements
+    learning_rates = [
+        learning_rate_00,
+        learning_rate_0,
+        # learning_rate_1,
+        # learning_rate_1,
+        learning_rate_0,
+        learning_rate_00,
+    ]
+    ''' 
+
     layers = []
 
     layers.append(RangeNormalization(training_set))
@@ -98,7 +132,7 @@ def initialize(
         error_function=Sqr,
         n_iter_train=5e4,
         n_iter_evaluate=1e4,
-        n_iter_evaluate_hyperparameters=7,
+        n_iter_evaluate_hyperparameters=39,
         verbose=False,
     )
 
