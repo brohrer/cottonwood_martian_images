@@ -3,11 +3,6 @@ from PIL import Image
 import numpy as np
 import lodgepole.image_tools as lit
 
-training_path = os.path.join("data", "training")
-tuning_path = os.path.join("data", "tuning")
-evaluation_path = os.path.join("data", "evaluation")
-
-switch_probability = 1 / 100
 
 def load_image(path, imagename, patch_size):
     img = np.asarray(Image.open(os.path.join(path, imagename))) / 255
@@ -32,65 +27,44 @@ def load_image(path, imagename, patch_size):
     return padded
 
 
-def pre_load(patch_size):
-    training_images = []
-    tuning_images = []
-    evaluation_images = []
-    for path, imagelist in zip(
-        (training_path, tuning_path, evaluation_path),
-        (training_images, tuning_images, evaluation_images)
-    ):
-        filenames = os.listdir(path)
-        imagenames = [f for f in filenames if f[-4:] == ".jpg"]
+def load_images(patch_size, image_path):
+    images = []
+    filenames = os.listdir(image_path)
+    imagenames = []
 
-        assert len(imagenames) > 0
+    for filename in filenames:
+        try:
+            image = load_image(image_path, filename, patch_size)
+            images.append(image)
+            imagenames.append(filename)
+        except Exception:
+            pass
 
-        for imagename in imagenames:
-            imagelist.append(load_image(path, imagename, patch_size))
+    assert len(images) > 0
 
-    return (training_images, tuning_images, evaluation_images)
+    return images, imagenames
 
 
-def get_data_sets(patch_size=10):
+def data_generator(imagelist, patch_size):
+    img = None
+    switch_probability = 1 / 100
+    while True:
+        # Occasionally switch to a new image
+        if img is None or np.random.sample() < switch_probability:
+            img = np.random.choice(imagelist)
+            n_rows, n_cols = img.shape
+
+        i_row = np.random.randint(n_rows - patch_size)
+        i_col = np.random.randint(n_cols - patch_size)
+        yield img[i_row: i_row + patch_size, i_col: i_col + patch_size]
+
+
+def get_training_data(patch_size, image_path):
     """
-    This function creates three other functions that generate data.
-    One generates a training data set,
-    one a tuning data set, and the other, an evaluation set.
-
-    The examples are pulled from images taken by the Mars Curiosity Rover.
-    https://mars.nasa.gov/msl/multimedia/
-
-    To use in a script:
-
-        import data_loader_martian_images as dat
-
-        (training_generator,
-            tuning_generator,
-            evaluation_generator) = dat.get_data_sets()
-        new_training_example = next(training_generator())
-        new_tuning_example = next(tuning_generator())
-        new_evaluation_example = next(evaluation_generator())
+    This function creates a function that generates training data.
     """
-    # Pre-load all the images into memory
-    training_images, tuning_images, evaluation_images = pre_load(patch_size)
-
-    def data_generator(imagelist):
-        img = None
-        while True:
-            # Occasionally switch to a new image
-            if img is None or np.random.sample() < switch_probability:
-                img = np.random.choice(imagelist)
-                n_rows, n_cols = img.shape
-
-            i_row = np.random.randint(n_rows - patch_size)
-            i_col = np.random.randint(n_cols - patch_size)
-            yield img[i_row: i_row + patch_size, i_col: i_col + patch_size]
-
-    return (
-        data_generator(training_images),
-        data_generator(tuning_images),
-        data_generator(evaluation_images)
-    )
+    training_images, _ = load_images(patch_size, image_path)
+    return data_generator(training_images, patch_size)
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ from cottonwood.core.layers.dense import Dense
 from cottonwood.core.layers.range_normalization import RangeNormalization
 from cottonwood.core.layers.difference import Difference
 from cottonwood.core.optimizers import Momentum
-import image_loader as ldr
+import dev_image_loader as ldr
 from ponderosa.optimizers import EvoPowell
 
 CONDITIONS = {
@@ -50,8 +50,8 @@ def initialize(
     sample = next(training_set)
     n_pixels = np.prod(sample.shape)
     # n_nodes_dense = [n_nodes_00, n_nodes_0, n_nodes_1, n_nodes_2, n_nodes_3]
-    # n_nodes_dense = [n_nodes_00, n_nodes_1, n_nodes_3]
-    n_nodes_dense = [n_nodes_1]
+    n_nodes_dense = [n_nodes_00, n_nodes_1, n_nodes_3]
+    # n_nodes_dense = [n_nodes_1]
     n_nodes_dense = [n for n in n_nodes_dense if n > 0]
     n_nodes = n_nodes_dense + [n_pixels]
 
