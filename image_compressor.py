@@ -99,12 +99,12 @@ def train(
     autoencoder = ANN(
         layers=layers,
         error_function=Sqr,
-        n_iter_train=5e6,
+        n_iter_train=5e5,
         n_iter_evaluate=1e4,
         n_iter_evaluate_hyperparameters=9,
         printer=printer,
         verbose=True,
-        viz_interval=1e6,
+        viz_interval=1e5,
     )
     autoencoder.train(training_patches)
     return autoencoder
