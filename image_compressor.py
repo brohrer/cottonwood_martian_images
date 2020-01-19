@@ -66,6 +66,8 @@ def train(
         the narrowest layer, and its node activities
         are used as the representation
         of the compressed patch.
+
+    returns a trained autoencoder
     """
     training_patches = ldr.get_training_data(patch_size, image_path)
 
@@ -99,12 +101,12 @@ def train(
     autoencoder = ANN(
         layers=layers,
         error_function=Sqr,
-        n_iter_train=5e5,
+        n_iter_train=5e4,
         n_iter_evaluate=1e4,
         n_iter_evaluate_hyperparameters=9,
         printer=printer,
         verbose=True,
-        viz_interval=1e5,
+        viz_interval=1e4,
     )
     autoencoder.train(training_patches)
     return autoencoder
@@ -209,8 +211,9 @@ def load_model(model_path):
     """
     Load the autoencoder model from a pickle file.
 
-    autoencoder: the neural network trained on the images
     model_path: str, the directory that will holds the pickled model
+
+    returns the autoencoder trained on the images
     """
     autoencoder = None
     with open(model_path, "rb") as f:
