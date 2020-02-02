@@ -65,9 +65,3 @@ def get_training_data(patch_size, image_path):
     """
     training_images, _ = load_images(patch_size, image_path)
     return data_generator(training_images, patch_size)
-
-
-if __name__ == "__main__":
-    training_set, tuning_set, evaluation_set = get_data_sets()
-    for _ in range(1000):
-        print(next(training_set))
