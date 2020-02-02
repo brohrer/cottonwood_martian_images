@@ -86,8 +86,8 @@ def train(
     for i_layer in range(len(n_nodes)):
         new_layer = Dense(
             n_nodes[i_layer],
-            activation_function=activation_function,
-            initializer=initializer,
+            activation_function=activation_function(),
+            initializer=initializer(),
             previous_layer=layers[-1],
             optimizer=Momentum(
                 learning_rate=learning_rate,
